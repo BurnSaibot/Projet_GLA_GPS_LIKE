@@ -32,4 +32,4 @@ var itineraireSchema = new Schema({
     
 }); 
 
-exports.itineraire = mongoose.model('vehicule', itineraireSchema); 
+exports.itineraire = mongoose.model('itineraire', itineraireSchema); 
