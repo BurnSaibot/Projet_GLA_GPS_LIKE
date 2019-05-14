@@ -48,7 +48,8 @@ exports.create = function(req,res) {
         // create new user
         var user = new User({
             mail: req.body.mail,
-
+            nom : req.body.nom,
+            prenom: req.body.prenom,
             salt: salt,
             hash: hash,
         });
@@ -56,13 +57,14 @@ exports.create = function(req,res) {
         // save it
         user.save(function (error, user) {
             if (error && error.code === 11000) {
-            error = 'Invalid username (duplicate).';
+            error = 'Invalid mail (duplicate).';
+            _.response.sendError(res, error, 500);
             } else {
             user.__v = undefined;
             }
 
-            // send new user (or error, if any)
-            _.response.fSendResource(res, User)(error, user)
+            // send validation (or error, if any)
+            _.response.sendSuccess(res,'utilisateur créé.')
         });
         }
     );
