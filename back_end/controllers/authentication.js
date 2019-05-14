@@ -1,8 +1,6 @@
 var crypto = require('crypto');
 var _ = require('./Utils.js');
-var mUser = require('../models/User.js');
-var User = require('./User.js');
-var Group = require('./Group.js')
+var User = require('../models/user.js');
 
 const KEYLEN = 128;
 const ITERATIONS = 12000;
@@ -57,10 +55,10 @@ exports.middleware.isLoggedIn = function (req, res, next) {
 // Login
 exports.login = function (req, res) {
 
-    var failure = 'Authentication failed (check your username and password).';
+    var failure = 'Authentication failed (check your mail and password).';
   
-    // check that both username and password are defined
-    if (req.body.username === undefined ||
+    // check that both mail and password are defined
+    if (req.body.mail === undefined ||
       req.body.password === undefined) {
       _.response.sendError(res, failure, 401);
       return;
@@ -68,7 +66,7 @@ exports.login = function (req, res) {
   
     // find user by its name
     User.findOne({
-      username: req.body.username
+      mail: req.body.mail
     }, function (error, user) {
   
       // if error or user does not exist, report authentication failure
@@ -108,8 +106,8 @@ exports.me = function (req, res) {
     res.status(200)
         .json({
             _id: user._id,
-            username: user.username,
-            role: user.role,
-            description: user.description
+            mail: user.mail,
+            name: user.prenom,
+            surname: user.nom
         });
 };
