@@ -11,8 +11,10 @@ var ville = require ('./controllers/ville.js');
 exports.initialize = function (app) {
     
 app.get('/', function(req,res,next) {})
-.get('/login', authentication.login())
-.get('/logout', authentication.login())
+.get('/login', authentication.login)
+.get('/logout', authentication.logout)
+.post('/inscription', user.create)
+
 //we should add routes when needed, dont forget that we can GET/POST/PUT/DELETE for get/create/updt/delete
 
 };
