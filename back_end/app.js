@@ -8,6 +8,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var routes = require('./routes.js');
+
 var app = express();
 app.set('port', process.env.PORT || 3000);
 // view engine setup
@@ -38,6 +40,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+routes.initialize(app);
 
 module.exports = app;
 
