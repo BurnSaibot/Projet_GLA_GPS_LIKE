@@ -15,3 +15,7 @@ var sendSuccess = exports.response.sendSuccess = function (res, success) {
       success: success
     });
 };
+
+var sendObjectData = exports.response.sendData = function(res,data){
+  res.status(200).json(data);
+}

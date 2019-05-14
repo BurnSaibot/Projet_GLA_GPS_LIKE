@@ -1,5 +1,5 @@
 var _ = require('./utils');
-var User = require('../models/User');
+var User = require('../models/user');
 
 exports.create = function(req,res) {
     // check mail validity
