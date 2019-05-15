@@ -2,12 +2,12 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema; 
 
 var optionSchema = new Schema({
-    plusCourt:Boolean,
-    plusRapide:Boolean,
-    sansRadar:Boolean,
-    sansPeage:Boolean,
-    etapes:Boolean,
-    touristique:Boolean,
+    plusCourt: Boolean,
+    plusRapide: Boolean,
+    sansRadar: Boolean,
+    sansPeage: Boolean,
+    etapes: Boolean,
+    touristique: Boolean,
     villesEtapes: [{
         type: Schema.Types.ObjectId,
         ref: 'ville'

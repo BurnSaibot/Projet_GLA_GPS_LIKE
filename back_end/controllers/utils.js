@@ -1,3 +1,5 @@
+
+exports.response = []
 var sendError = exports.response.sendError = function (res, error, code) {
 
     if (code === undefined) {
@@ -15,3 +17,7 @@ var sendSuccess = exports.response.sendSuccess = function (res, success) {
       success: success
     });
 };
+
+var sendObjectData = exports.response.sendObjectData = function(res,data){
+  res.status(200).json(data);
+}
