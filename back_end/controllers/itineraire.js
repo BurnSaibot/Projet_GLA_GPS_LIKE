@@ -1,6 +1,6 @@
 var _ = require('./utils');
 var itineraire = require('../models/itineraire');
-var options = require('../models/option');
+var option = require('../models/option');
 
 exports.getHistorique = function(req,res) {
         userID = req.session.user._id;
@@ -16,11 +16,27 @@ exports.getHistorique = function(req,res) {
             .catch(function(err){
                 _.response.sendError(res,err,500);
             });
-        ;
 }
 
 exports.create = function(req,res) {
+    // check all boolean definition
+    if ( req.body.villeDepart === undefined ) {
+        _.response.sendError(res, 'villeDepart : pas de valeur précisée.', 400);
+        return;
+    }
+    // check all boolean definition
+    if ( req.body.villeArrivee === undefined ) {
+        _.response.sendError(res, 'villeArrivee : pas de valeur précisée.', 400);
+        return;
+    }
+
+    // check if depart =/= arrivée
+    if ( req.body.villeArrivee == req.body.villeDepart ) {
+        _.response.sendError(res, 'depart == arrivée interdit', 400);
+        return;
+    }
     // avant de créer l'itinéraire, on doit d'abord créer son champ d'options
+    
     // check purpose validity
     if (
         req.body.plusCourt === undefined ||
@@ -51,12 +67,12 @@ exports.create = function(req,res) {
         return;
     }
     //si on a précisé des étapes, alors on vérifie que req.body.villesEtapes contient au moins une étape
-    if ( req.body.etapes && villesEtapes === [] ) {
+    if ( req.body.etapes && req.body.villesEtapes === [] ) {
         _.response.sendError(res, 'L\'utilisateu a précisé un itinéraire avec étapes, mais pas de ville étape précisée.', 400);
         return;
     }
 
-    var options = new options({
+    var options = await option.create({
         plusCourt: req.body.plusCourt,
         plusRapide: req.body.plusRapide,
         sansRadar: req.body.sansRadar,
@@ -64,7 +80,48 @@ exports.create = function(req,res) {
         etapes: req.body.villesEtapes,
         utilisateur: req.session.user._id
     });
-
     
+    var itineraire = await itineraire.create({
+        villeDepart: req.body.villeDepart,
+        villeArrivee: req.body.villeArrivee,
+        date: new Date().toDateString,
+        vehicule: req.body.vehicule,
+        optionsAssociees: options._id,
+        villeEtapes : req.body.villeEtapes
+    });
+}
+
+exports.getInfo = function(req,res) {
+    itineraire
+        .findById(req.params.itineraire)
+        .populate(villeDepart)
+        .populate(villeArrivee)
+        .populate(vehicule)
+        .populate(villeEtapes)
+        .populate(optionsAssociees)
+        .exec()
+        .then(function(data){
+            _.response.sendObjectData(res,data);
+        })
+        .catch(function(err){
+            _.response.sendError(res,err,500);
+        });
+}
+
+exports.delete = function(req,res) {
+    var id = req.params.itineraire;
+    var itineraire = await itineraire.findById(id);
+    var id_opt = itineraire.optionsAssociees;
+
+    itineraire.findByIdAndDelete(id)
+        .then(function(){
+            return option.findByIdAndDelete(id_opt);
+        })
+        .then(function(){
+            _.sendSuccess(res,'itineraire et options supprimées');
+        })
+        .catch(function(err){
+            _.sendError(res,err,500);
+        })
 
 }

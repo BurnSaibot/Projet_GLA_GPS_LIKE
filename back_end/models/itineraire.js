@@ -12,7 +12,7 @@ var itineraireSchema = new Schema({
         ref: 'ville',
         required : true
     },
-    date : Date,
+    date : String,
     utilisateur : {
         type: Schema.Types.ObjectId,
         ref: 'utilisateur'
@@ -21,7 +21,7 @@ var itineraireSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'vehicule'
     },
-    optionsAssocies : {
+    optionsAssociees : {
         type: Schema.Types.ObjectId,
         ref: 'option'
     },
