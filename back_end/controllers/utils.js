@@ -1,3 +1,5 @@
+
+exports.response = []
 var sendError = exports.response.sendError = function (res, error, code) {
 
     if (code === undefined) {

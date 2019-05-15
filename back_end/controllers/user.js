@@ -64,7 +64,8 @@ exports.create = function(req,res) {
             }
 
             // send validation (or error, if any)
-            _.response.sendSuccess(res,'utilisateur créé.')
+            _.response.sendObjectData(res,user);
+            //_.response.sendSuccess(res,'utilisateur créé.')
         });
         }
     );
