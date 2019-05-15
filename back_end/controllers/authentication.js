@@ -12,9 +12,8 @@ var getHash = function (password, salt, callback) {
     // password: user password
     // salt: user salt
     // callback: function (error, hash)
-  
     try {
-      crypto.pbkdf2(password, salt, ITERATIONS, KEYLEN, function (error, buffer) {
+      crypto.pbkdf2(password, salt, ITERATIONS, KEYLEN,"sha512", function (error, buffer) {
         var hash = buffer.toString('base64');
         callback(error, hash);
       });
@@ -28,9 +27,10 @@ var getHash = function (password, salt, callback) {
   exports.helper.generateSaltAndHash = function (password, callback) {
     // password: user password
     // callback: function (error, salt, hash)
-  
+    
     crypto.randomBytes(KEYLEN, function (error, buffer) {
       if (error) {
+        
         callback(error);
       } else {
         var salt = buffer.toString('base64');

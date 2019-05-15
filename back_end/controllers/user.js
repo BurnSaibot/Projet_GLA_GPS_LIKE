@@ -1,12 +1,14 @@
 var _ = require('./utils');
-var User = require('../models/user');
+var authentication = require("./authentication");
+var User = require('../models/user.js').user;
 
 exports.create = function(req,res) {
+    console.log("Body : " + JSON.stringify(req.body))
     // check mail validity
     if (
         req.body.mail === undefined ||
-        req.body.mail.length < 2 ||
-        req.body.mail.indexOf(' ') > -1) {
+        req.body.mail.length < 2 /*||
+        req.body.mail.indexOf(' ') > -1*/) {
             _.response.sendError(res, 'Invalid mail.', 400);
             return;
             }
@@ -35,13 +37,12 @@ exports.create = function(req,res) {
             }
     
     // generate salt and hash
-    Authentication.helper.generateSaltAndHash(
+    authentication.helper.generateSaltAndHash(
         req.body.password,
         function (error, salt, hash) {
-
         // error happened when generating salt and hash
         if (error) {
-            _.response.sendError(res, error, 500);
+            _.response.sendError(res, "erreur lors de la génération du sel et du hash", 500);
             return;
         }
 
