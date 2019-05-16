@@ -73,7 +73,7 @@ exports.createVille = function(req, res) {
         });
 
         // save it
-        newVille.save(function (error, vehicle) {
+        newVille.save(function (error) {
             if (error) {
                 _.response.sendError(res, error, 500);
                 return;
@@ -84,51 +84,55 @@ exports.createVille = function(req, res) {
     }
 }
 
-exports.updtVille = function(req, res) {
-    var idv = req.params._id;
-    if (req.body.nom != undefined) {
-        Ville.findByIdAndUpdate(idv, {"nom": req.body.nom}, function(error){
-            if (error) {
-                _.response.sendError(res, error, 500);
-                return;
-            }
-        });
-    }
-
-    if (req.body.taille != undefined &&
-        (req.body.taille === type.petite ||
-            req.body.taille === type.moyenne ||
-            req.body.taille === type.grande)) {
-            Ville.findByIdAndUpdate(idv, {"taille": req.body.taille},
-            function(error){
+exports.updtVille = function (req, res) {
+    if (checkAdmin(req)) {
+        var idv = req.params._id;
+        if (req.body.nom != undefined) {
+            Ville.findByIdAndUpdate(idv, { "nom": req.body.nom }, function (error) {
                 if (error) {
                     _.response.sendError(res, error, 500);
                     return;
                 }
             });
         }
-    
-    if (req.body.touristique != undefined &&
-        typeof variable != "boolean") {
-        Ville.findByIdAndUpdate(idv, { "touristique": req.body.touristique },
-        function (error) {
+
+        if (req.body.taille != undefined &&
+            (req.body.taille === type.petite ||
+                req.body.taille === type.moyenne ||
+                req.body.taille === type.grande)) {
+            Ville.findByIdAndUpdate(idv, { "taille": req.body.taille },
+                function (error) {
+                    if (error) {
+                        _.response.sendError(res, error, 500);
+                        return;
+                    }
+                });
+        }
+
+        if (req.body.touristique != undefined &&
+            typeof req.body.touristique != "boolean") {
+            Ville.findByIdAndUpdate(idv, { "touristique": req.body.touristique },
+                function (error) {
+                    if (error) {
+                        _.response.sendError(res, error, 500);
+                        return;
+                    }
+                });
+        }
+        _.response.sendSuccess(res, 'ville modifiée.')
+    }
+}
+
+
+exports.supprimerVille = function (req, res) {
+    if (checkAdmin(req)) {
+        var idv = req.params._id;
+        Ville.findByIdAndDelete(idv, function (error) {
             if (error) {
                 _.response.sendError(res, error, 500);
                 return;
             }
-        });
+            _.response.sendSuccess(res, 'Ville est supprimée.');
+        })
     }
-    _.response.sendSuccess(res,'ville modifiée.')
-}
-
-
-exports.supprimerVille = function(req, res) {
-    var idv = req.params._id;
-    Ville.findByIdAndDelete(idv, function(error){
-        if (error) {
-            _.response.sendError(res, error, 500);
-            return;
-        }
-        _.response.sendSuccess(res, 'Ville est supprimée.');
-    })
 }

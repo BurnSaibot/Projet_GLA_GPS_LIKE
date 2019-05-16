@@ -33,6 +33,11 @@ app.get('/', function(req,res,next) {})
 .post('/ville/:id/updt', ville.updtVille)
 .post('/ville/:id/delete', ville.supprimerVille)
 
+.get('/route',route.listeRoutes)
+.post('/route', route.createRoute)
+.get('/route/:id', route.infoRoute)
+.post('/route/:id/updt', route.updtRoute)
+.post('/route/:id/delete', route.supprimerRoute)
 
 //we should add routes when needed, dont forget that we can GET/POST/PUT/DELETE for get/create/updt/delete
 
