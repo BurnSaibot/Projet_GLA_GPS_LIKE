@@ -39,6 +39,12 @@ app.get('/', function(req,res,next) {})
 .post('/route/:id/updt', route.updtRoute)
 .post('/route/:id/delete', route.supprimerRoute)
 
+.get('/troncon',troncon.listeTroncon)
+.post('/troncon', troncon.createTroncon)
+.get('/troncon/:id', troncon.infoTroncon)
+.post('/troncon/:id/updt', troncon.updtTroncon)
+.post('/troncon/:id/delete', troncon.supprimerTroncon)
+
 //we should add routes when needed, dont forget that we can GET/POST/PUT/DELETE for get/create/updt/delete
 
 };

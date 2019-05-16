@@ -60,7 +60,7 @@ exports.createVille = function(req, res) {
         }
         // check touristic validity
         if (req.body.touristique === undefined ||
-            typeof variable != "boolean") {
+            typeof req.body.touristique != "boolean") {
             _.response.sendError(res, 'Invalid touristic', 400);
             return;
         }
