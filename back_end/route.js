@@ -16,35 +16,34 @@ app.get("/", function (req,res,next){_.response.sendSuccess(res,"On a bien les t
 
 .post("/login", authentication.login)
 
-.get("/logout", authentication.logout)
+.get("/logout", authentication.middleware.isLoggedIn, authentication.logout)
 
 
-.get('/vehicule', vehicule.listeVehicule)
-.get('/vehicule/:id', vehicule.detailVehicule)
-.post('/vehicule', vehicule.createVehicule)
-.put('/vehicule/:id', vehicule.updt)
-.delete('/vehicule/:id', vehicule.supprimerVehicule)
+.get('/vehicule', authentication.middleware.isLoggedIn, vehicule.listeVehicule)
+.get('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.detailVehicule)
+.post('/vehicule', authentication.middleware.isLoggedIn, vehicule.createVehicule)
+.put('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.updt)
+.delete('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.supprimerVehicule)
 
-.post('/option', option.defaut)
-.put('/option', option.updtOption)
+.put('/option', authentication.middleware.isLoggedIn, option.updtOption)
 
-.get('/ville', ville.listeVilles)
-.post('/ville', ville.createVille)
-.get('/ville/:id', ville.infoVille)
-.put('/ville/:id', ville.updtVille)
-.delete('/ville/:id', ville.supprimerVille)
+.get('/ville', authentication.middleware.isLoggedIn, ville.listeVilles)
+.post('/ville', authentication.middleware.isLoggedIn, ville.createVille)
+.get('/ville/:id', authentication.middleware.isLoggedIn, ville.infoVille)
+.put('/ville/:id', authentication.middleware.isLoggedIn, ville.updtVille)
+.delete('/ville/:id', authentication.middleware.isLoggedIn, ville.supprimerVille)
 
-.get('/route',route.listeRoutes)
-.post('/route', route.createRoute)
-.get('/route/:id', route.infoRoute)
-.put('/route/:id', route.updtRoute)
-.delete('/route/:id', route.supprimerRoute)
+.get('/route', authentication.middleware.isLoggedIn,route.listeRoutes)
+.post('/route', authentication.middleware.isLoggedIn, route.createRoute)
+.get('/route/:id', authentication.middleware.isLoggedIn, route.infoRoute)
+.put('/route/:id', authentication.middleware.isLoggedIn, route.updtRoute)
+.delete('/route/:id', authentication.middleware.isLoggedIn, route.supprimerRoute)
 
-.get('/troncon',troncon.listeTroncon)
-.post('/troncon', troncon.createTroncon)
-.get('/troncon/:id', troncon.infoTroncon)
-.put('/troncon/:id', troncon.updtTroncon)
-.delete('/troncon/:id', troncon.supprimerTroncon)
+.get('/troncon', authentication.middleware.isLoggedIn,troncon.listeTroncon)
+.post('/troncon', authentication.middleware.isLoggedIn, troncon.createTroncon)
+.get('/troncon/:id', authentication.middleware.isLoggedIn, troncon.infoTroncon)
+.put('/troncon/:id', authentication.middleware.isLoggedIn, troncon.updtTroncon)
+.delete('/troncon/:id', authentication.middleware.isLoggedIn, troncon.supprimerTroncon)
 
 //we should add routes when needed, dont forget that we can GET/POST/PUT/DELETE for get/create/updt/delete
 

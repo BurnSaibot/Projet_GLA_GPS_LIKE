@@ -24,13 +24,13 @@ exports.detailVehicule = function(req, res) {
 }
 
 exports.supprimerVehicule = function(req, res) {
-    var idv = req.params._id;
+    var idv = req.params.id;
     Vehicule.findByIdAndDelete(idv, function(error, result){
         if (error) {
             _.response.sendError(res, error, 500);
             return;
         }
-        _.response.sendSuccess(res,'Vehicule a été supprimé.' + JSON.stringify(result));
+        _.response.sendSuccess(res,'Vehicule a été supprimé. \n' + JSON.stringify(result));
     })
 }
 

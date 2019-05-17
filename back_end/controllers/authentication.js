@@ -46,7 +46,7 @@ var getHash = function (password, salt, callback) {
 // user is logged in?
 exports.middleware.isLoggedIn = function (req, res, next) {
   if (!req.session.user) {
-    _.response.sendError(res, 'Access denied.', 401);
+    _.response.sendError(res, 'Access denied. You have to be logged in to access this address', 401);
     return;
   }
   next();
