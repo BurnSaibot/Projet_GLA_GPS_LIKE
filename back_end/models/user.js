@@ -22,6 +22,10 @@ var userSchema = new Schema({
         trim: true,
         lowercase: true
     },
+    role :{
+        type: Number,
+        required: true
+    }
     // pour trouver le contenu de l'historique d'un utilisateur u, on cherche dans itinéraire les itinéraires dont le champ utilisateur est u
 }); 
 

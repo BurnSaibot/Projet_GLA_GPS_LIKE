@@ -51,6 +51,13 @@ exports.middleware.isLoggedIn = function (req, res, next) {
   }
   next();
 };
+exports.middleware.isAdmin = function (req,res,next) {
+  if (req.session.user.role <= 1) {
+    _.response.sendError(res, 'Access denied. You have to be admin to edit on the map (ville,route,troncon)', 401);
+    return;
+  }
+  next();
+}
 
 // Login
 exports.login = function (req, res) {

@@ -11,7 +11,6 @@ checkAdmin = function(req) {
 }
 
 exports.listeRoutes = function(req, res) {
-    if (checkAdmin(req)) {
         Route.find(function(error, routes){
             if (error) {
                 _.response.sendError(res, error, 500);
@@ -20,14 +19,9 @@ exports.listeRoutes = function(req, res) {
             res.json(routes);
             _.response.sendSuccess(res,'liste de routes créé.');
         });
-    } else {
-        _.response.sendError(res, error, 500);
-        return;
-    }
 }
 
 exports.infoRoute = function(req, res) {
-    if (checkAdmin(req)) {
         var idr = req.params._id;
         Ville.findById(idr, function(error, route){
             if (error) {
@@ -36,14 +30,9 @@ exports.infoRoute = function(req, res) {
             }
             res.json(route);
         });
-    } else {
-        _.response.sendError(res, error, 500);
-        return;
-    }
 }
 
 exports.createRoute = function(req, res) {
-    if (checkAdmin(req)) {
         // check name validity
         if (req.body.nom === undefined ||
             req.body.nom.length < 2) {
@@ -77,11 +66,9 @@ exports.createRoute = function(req, res) {
             newRoute.__v = undefined;
             _.response.sendSuccess(res,'route créée.')
         });
-    }
 }
 
 exports.updtRoute = function (req, res) {
-    if (checkAdmin(req)) {
         var idr = req.params._id;
         if (req.body.nom != undefined) {
             Ville.findByIdAndUpdate(idr, { "nom": req.body.nom }, function (error) {
@@ -124,11 +111,9 @@ exports.updtRoute = function (req, res) {
                 });
         }
         _.response.sendSuccess(res, 'ville modifiée.')
-    }
 }
 
 exports.supprimerRoute = function (req, res) {
-    if (checkAdmin(req)) {
         var idr = req.params._id;
         Ville.findByIdAndDelete(idr, function (error) {
             if (error) {
@@ -137,5 +122,4 @@ exports.supprimerRoute = function (req, res) {
             }
             _.response.sendSuccess(res, 'Route est supprimée.');
         })
-    }
 }

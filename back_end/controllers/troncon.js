@@ -9,8 +9,7 @@ checkAdmin = function(req) {
     }
 }
 
-exports.listeTroncon = function(req, res) {
-    if (checkAdmin(req)) {
+exports.getAll = function(req, res) {
         Route.find(function(error, troncons){
             if (error) {
                 _.response.sendError(res, error, 500);
@@ -19,14 +18,9 @@ exports.listeTroncon = function(req, res) {
             res.json(troncons);
             _.response.sendSuccess(res,'liste de troncons créé.');
         });
-    } else {
-        _.response.sendError(res, error, 500);
-        return;
-    }
 }
 
 exports.infoTroncon = function(req, res) {
-    if (checkAdmin(req)) {
         var idt = req.params._id;
         Ville.findById(idt, function(error, troncon){
             if (error) {
@@ -35,14 +29,9 @@ exports.infoTroncon = function(req, res) {
             }
             res.json(troncon);
         });
-    } else {
-        _.response.sendError(res, error, 500);
-        return;
-    }
 }
 
 exports.createTroncon = function(req, res) {
-    if (checkAdmin(req)) {
         // check touristic validity
         if (req.body.touristique === undefined ||
             typeof req.body.touristique != "boolean") {
@@ -84,11 +73,9 @@ exports.createTroncon = function(req, res) {
             newTroncon.__v = undefined;
             _.response.sendSuccess(res,'troncon créée.')
         });
-    }
 }
 
 exports.updtTroncon = function (req, res) {
-    if (checkAdmin(req)) {
         var idt = req.params._id;
         if (req.body.touristique != undefined &&
             typeof req.body.touristique === "boolean") {
@@ -131,11 +118,9 @@ exports.updtTroncon = function (req, res) {
                 });
         }
         _.response.sendSuccess(res, 'troncon modifiée.')
-    }
 }
 
 exports.supprimerTroncon = function (req, res) {
-    if (checkAdmin(req)) {
         var idt = req.params._id;
         Ville.findByIdAndDelete(idt, function (error) {
             if (error) {
@@ -144,5 +129,4 @@ exports.supprimerTroncon = function (req, res) {
             }
             _.response.sendSuccess(res, 'Troncon est supprimée.');
         })
-    }
 }
