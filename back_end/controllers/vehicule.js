@@ -75,10 +75,6 @@ exports.createVehicule = function(req, res) {
             _.response.sendError(res, 'Invalid name.', 400);
             return;
         }
-    console.log(req.body.qteCO2Neuf === undefined);
-    console.log(isNaN(req.body.qteCO2Neuf));
-    console.log(req.body.qteCO2Neuf < 0);
-    console.log(req.body)
     // check CO2 validity
     if (
         req.body.qteCO2Neuf === undefined ||
