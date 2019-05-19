@@ -74,6 +74,7 @@ exports.create = function(req,res) {
                 sansRadar: false,
                 sansPeage: false,
                 etapes: false,
+                touristique: false,
                 utilisateur: user._id
             }).then(function (option){
                 console.log(option)

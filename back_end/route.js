@@ -25,6 +25,7 @@ app.get("/", function (req,res,next){_.response.sendSuccess(res,"On a bien les t
 .put('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.updt)
 .delete('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.supprimerVehicule)
 
+.get('/option', authentication.middleware.isLoggedIn, option.get)
 .put('/option', authentication.middleware.isLoggedIn, option.updtOption)
 
 .get('/ville', authentication.middleware.isLoggedIn, ville.listeVilles)
