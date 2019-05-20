@@ -40,8 +40,9 @@ app
 .put('/route/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, route.updtRoute)
 .delete('/route/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, route.supprimerRoute)
 
-.get('/troncon/', authentication.middleware.isLoggedIn, troncon.getAll)
-.post('/troncon', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.createTroncon)
+.get('/troncon', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.getAll)
+.get('/troncon/route/:idr', authentication.middleware.isLoggedIn, troncon.getAllforOne)
+.post('/troncon/:idr', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.createTroncon)
 .get('/troncon/:id', authentication.middleware.isLoggedIn, troncon.infoTroncon)
 .put('/troncon/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.updtTroncon)
 .delete('/troncon/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.supprimerTroncon)
