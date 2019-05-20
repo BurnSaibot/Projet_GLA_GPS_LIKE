@@ -20,7 +20,7 @@ exports.infoVille = function(req, res) {
                 _.response.sendError(res, error, 500);
                 return;
             }
-            res.json(ville);
+            _.response.sendObjectData(res, ville);
         });
 }
 
@@ -55,45 +55,33 @@ exports.createVille = function(req, res) {
 }
 
 exports.updtVille = function (req, res) {
-        var idv = req.params.id;
-        if (req.body.nom != undefined) {
-            Ville.findByIdAndUpdate(idv, { "nom": req.body.nom }, function (error) {
-                if (error) {
-                    _.response.sendError(res, error, 500);
-                    return;
-                }
-            });
-        }
 
-        if (req.body.taille != undefined &&
-            (req.body.taille === type.petite ||
-                req.body.taille === type.moyenne ||
-                req.body.taille === type.grande)) {
-            Ville.findByIdAndUpdate(idv, { "taille": req.body.taille },
-                function (error) {
-                    if (error) {
-                        _.response.sendError(res, error, 500);
-                        return;
-                    }
-                });
-        }
-
-        if (req.body.touristique != undefined &&
-            typeof req.body.touristique != "boolean") {
-            Ville.findByIdAndUpdate(idv, { "touristique": req.body.touristique },
-                function (error) {
-                    if (error) {
-                        _.response.sendError(res, error, 500);
-                        return;
-                    }
-                });
-        }
-        _.response.sendSuccess(res, 'ville modifiée.')
+    var idv = req.params.id;
+    // check name validity
+    if (req.body.nom.length < 2) {
+        _.response.sendError(res, 'Taille du nom invalide', 400);
+        return;
+    }
+    // check size validity
+    if (!cType(req.body.taille) ) {
+        _.response.sendError(res, 'Invalid type : ' + req.body.taille + " must be 'petite', 'moyenne' or 'grande'", 400);
+        return;
+    }
+    Ville
+    .findByIdAndUpdate(idv, {"taille": req.body.taille,"touristique": req.body.touristique, "nom": req.body.nom}, {useFindAndModify: false})
+    .then(function (result) {
+        console.log("Result : " + result);
+        _.response.sendObjectData(res, result);
+    })
+    .catch(function (err) {
+        console.log(err);
+        _.response.sendError(res, err, 500);
+    });
 }
 
 
 exports.supprimerVille = function (req, res) {
-        var idv = req.params._id;
+        var idv = req.params.id;
         Ville.findByIdAndDelete(idv, function (error) {
             if (error) {
                 _.response.sendError(res, error, 500);

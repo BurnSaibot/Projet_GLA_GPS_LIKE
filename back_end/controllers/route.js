@@ -2,13 +2,6 @@ var _ = require('./Utils.js');
 var Route = require('../models/route.js').route;
 var type = require('../models/route.js').typeRoute;
 
-checkAdmin = function(req) {
-    if (req.session.user.admin) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 exports.listeRoutes = function(req, res) {
         Route.find(function(error, routes){
