@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 var _ = require('./Utils.js');
-var User = require('../models/user.js');
+var User = require('../models/user.js').user;
 
 const KEYLEN = 128;
 const ITERATIONS = 12000;
@@ -46,7 +46,7 @@ var getHash = function (password, salt, callback) {
 // user is logged in?
 exports.middleware.isLoggedIn = function (req, res, next) {
   if (!req.session.user) {
-    _.response.sendError(res, 'Access denied.', 401);
+    _.response.sendError(res, 'Access denied. You have to be logged in to access this address', 401);
     return;
   }
   next();
@@ -54,9 +54,7 @@ exports.middleware.isLoggedIn = function (req, res, next) {
 
 // Login
 exports.login = function (req, res) {
-
     var failure = 'Authentication failed (check your mail and password).';
-  
     // check that both mail and password are defined
     if (req.body.mail === undefined ||
       req.body.password === undefined) {
@@ -98,7 +96,7 @@ exports.login = function (req, res) {
   // logout
 exports.logout = function (req, res) {
     req.session.destroy(
-      _.response.fSendSuccess(res, 'Logout succeeded.'));
+      _.response.sendSuccess(res, 'Logout succeeded.'));
 };
   
 exports.me = function (req, res) {

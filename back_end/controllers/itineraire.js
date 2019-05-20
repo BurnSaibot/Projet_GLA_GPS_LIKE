@@ -78,8 +78,7 @@ exports.create = function (req,res) {
         plusRapide: req.body.plusRapide,
         sansRadar: req.body.sansRadar,
         sansPeage: req.body.sansPeage,
-        etapes: req.body.villesEtapes,
-        utilisateur: req.session.user._id
+        etapes: req.body.villesEtapes
     }).then(function (options){
         return itineraire.create({
             villeDepart: req.body.villeDepart,

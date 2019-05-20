@@ -6,7 +6,7 @@ var userSchema = new Schema({
         required: true,
         trim: true,
         lowercase: true,
-        unique: true,
+        unique: true
     },
     hash: String,
     salt: String,

@@ -1,9 +1,10 @@
 var _ = require('./utils');
 var authentication = require("./authentication");
 var User = require('../models/user.js').user;
+var option = require('../models/option').option;
+var vehicule = require('../models/vehicule').vehicule;
 
 exports.create = function(req,res) {
-    console.log("Body : " + JSON.stringify(req.body))
     // check mail validity
     if (
         req.body.mail === undefined ||
@@ -57,16 +58,38 @@ exports.create = function(req,res) {
 
         // save it
         user.save(function (error, user) {
+            console.log(error);
             if (error && error.code === 11000) {
             error = 'Invalid mail (duplicate).';
             _.response.sendError(res, error, 500);
+            return;
             } else {
             user.__v = undefined;
             }
 
-            // send validation (or error, if any)
-            _.response.sendObjectData(res,user);
-            //_.response.sendSuccess(res,'utilisateur créé.')
+            console.log(user);
+            option.create({
+                plusCourt: true,
+                plusRapide: false,
+                sansRadar: false,
+                sansPeage: false,
+                etapes: false,
+                utilisateur: user._id
+            }).then(function (option){
+                console.log(option)
+                return vehicule.create({
+                    nom: "vehicule par défaut",
+                    qteCO2Neuf: 129,
+                    etatRoues: 0,
+                    age: 0,
+                    utilisateur: user._id
+                });
+            }).then(function (vehicule){
+                console.log(vehicule);
+                _.response.sendSuccess(res, "utilisater, option par défaut et véhicule par défauts créés : " + user.nom + " " + user.prenom);
+            }).catch(function (err){
+                _.response.sendError(res,err,500);
+            });
         });
         }
     );

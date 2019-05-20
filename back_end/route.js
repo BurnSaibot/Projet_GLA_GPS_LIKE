@@ -1,50 +1,49 @@
 var authentication = require("./controllers/authentication");
 var user = require("./controllers/user.js");
 var itineraire = require("./controllers/itineraire.js");
-//var option = require("./controllers/option.js");
-//var route = require ("./controllers/route.js");
-//var troncon = require ("./controllers/troncon.js");
-//var vehicule = require ("./controllers/vehicule.js");
-//var ville = require ("./controllers/ville.js");
+var option = require("./controllers/option.js");
+var route = require ("./controllers/route.js");
+var troncon = require ("./controllers/troncon.js");
+var vehicule = require ("./controllers/vehicule.js");
+var ville = require ("./controllers/ville.js");
 var _ = require("./controllers/utils");
 
 //
 exports.initialize = function (app) {
     
 app.get("/", function (req,res,next){_.response.sendSuccess(res,"On a bien les trucs du serveur");})
-.get("/login", authentication.login)
-.get("/logout", authentication.logout)
 .post("/inscription", user.create)
 
+.post("/login", authentication.login)
+
+.get("/logout", authentication.middleware.isLoggedIn, authentication.logout)
 
 
-.get('/vehicule', vehicule.listeVehicule)
-.get('/vehicule/:id', vehicule.detailVehicule)
-.post('/vehicule', vehicule.createVehicule)
-.post('/vehicule/:id/updtAge', vehicule.updtAge)
-.post('/vehicule/:id/updtEtat', vehicule.updtEtat)
-.post('/vehicule/:id/delete', vehicule.supprimerVehicule)
+.get('/vehicule', authentication.middleware.isLoggedIn, vehicule.listeVehicule)
+.get('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.detailVehicule)
+.post('/vehicule', authentication.middleware.isLoggedIn, vehicule.createVehicule)
+.put('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.updt)
+.delete('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.supprimerVehicule)
 
-.get('/option', option.defaut)
-.post('/option', option.updtOption)
+.put('/option', authentication.middleware.isLoggedIn, option.updtOption)
 
-.get('/ville', ville.listeVilles)
-.post('/ville', ville.createVille)
-.get('/ville/:id', ville.infoVille)
-.post('/ville/:id/updt', ville.updtVille)
-.post('/ville/:id/delete', ville.supprimerVille)
+.get('/ville', authentication.middleware.isLoggedIn, ville.listeVilles)
+.post('/ville', authentication.middleware.isLoggedIn, ville.createVille)
+.get('/ville/:id', authentication.middleware.isLoggedIn, ville.infoVille)
+.put('/ville/:id', authentication.middleware.isLoggedIn, ville.updtVille)
+.delete('/ville/:id', authentication.middleware.isLoggedIn, ville.supprimerVille)
 
-.get('/route',route.listeRoutes)
-.post('/route', route.createRoute)
-.get('/route/:id', route.infoRoute)
-.post('/route/:id/updt', route.updtRoute)
-.post('/route/:id/delete', route.supprimerRoute)
+.get('/route', authentication.middleware.isLoggedIn,route.listeRoutes)
+.post('/route', authentication.middleware.isLoggedIn, route.createRoute)
+.get('/route/:id', authentication.middleware.isLoggedIn, route.infoRoute)
+.put('/route/:id', authentication.middleware.isLoggedIn, route.updtRoute)
+.delete('/route/:id', authentication.middleware.isLoggedIn, route.supprimerRoute)
 
-.get('/troncon',troncon.listeTroncon)
-.post('/troncon', troncon.createTroncon)
-.get('/troncon/:id', troncon.infoTroncon)
-.post('/troncon/:id/updt', troncon.updtTroncon)
-.post('/troncon/:id/delete', troncon.supprimerTroncon)
+.get('/troncon', authentication.middleware.isLoggedIn,troncon.listeTroncon)
+.post('/troncon', authentication.middleware.isLoggedIn, troncon.createTroncon)
+.get('/troncon/:id', authentication.middleware.isLoggedIn, troncon.infoTroncon)
+.put('/troncon/:id', authentication.middleware.isLoggedIn, troncon.updtTroncon)
+.delete('/troncon/:id', authentication.middleware.isLoggedIn, troncon.supprimerTroncon)
 
 //we should add routes when needed, dont forget that we can GET/POST/PUT/DELETE for get/create/updt/delete
 

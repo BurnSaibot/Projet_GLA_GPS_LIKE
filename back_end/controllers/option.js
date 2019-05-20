@@ -82,3 +82,32 @@ exports.updtOption = function(req, res) {
         }
     })
 }
+
+exports.updtOption = function (req, res) {
+    var idu = req.session.user._id;
+
+    if (
+        req.body.plusCourt === undefined ) {
+            _.response.sendError(res, 'Champ plusCourt non définie.', 400);
+            return;
+        }
+    
+    if (
+        req.body.plusRapide === undefined ) {
+            _.response.sendError(res, 'Champ plusRapide non définie.', 400);
+            return;
+        }
+    
+    //check if we have one & only one bool for "calculation mode" to true
+
+    
+    
+    // check state validity
+    if (
+        req.body.etatRoues === undefined ||
+        isNaN(req.body.etatRoues) ||
+        req.body.etatRoues < 0) {
+            _.response.sendError(res, 'Invalid state.', 400);
+            return;
+        }
+}
