@@ -54,11 +54,11 @@ exports.create = function(req,res) {
             prenom: req.body.prenom,
             salt: salt,
             hash: hash,
+            role: 1
         });
 
         // save it
         user.save(function (error, user) {
-            console.log(error);
             if (error && error.code === 11000) {
             error = 'Invalid mail (duplicate).';
             _.response.sendError(res, error, 500);
@@ -67,16 +67,15 @@ exports.create = function(req,res) {
             user.__v = undefined;
             }
 
-            console.log(user);
             option.create({
                 plusCourt: true,
                 plusRapide: false,
                 sansRadar: false,
                 sansPeage: false,
                 etapes: false,
+                touristique: false,
                 utilisateur: user._id
             }).then(function (option){
-                console.log(option)
                 return vehicule.create({
                     nom: "vehicule par défaut",
                     qteCO2Neuf: 129,
@@ -85,7 +84,6 @@ exports.create = function(req,res) {
                     utilisateur: user._id
                 });
             }).then(function (vehicule){
-                console.log(vehicule);
                 _.response.sendSuccess(res, "utilisater, option par défaut et véhicule par défauts créés : " + user.nom + " " + user.prenom);
             }).catch(function (err){
                 _.response.sendError(res,err,500);

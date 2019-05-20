@@ -15,7 +15,8 @@ var optionSchema = new Schema({
     //on enregistre dans la bdd que les sets d'options par défaut de l'utilisateurs et ceux liés à un itinéraire dans un historique.
     utilisateur: {
         type: Schema.Types.ObjectId,
-        ref: 'utilisateur'
+        ref: 'utilisateur',
+        unique: true
     }
 }); 
 
