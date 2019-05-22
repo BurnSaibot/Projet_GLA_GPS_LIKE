@@ -16,8 +16,15 @@ var optionSchema = new Schema({
     utilisateur: {
         type: Schema.Types.ObjectId,
         ref: 'utilisateur',
-        unique: true
+        index: {
+            unique:true,
+            partialFilterExpression: {
+                utilisateur: {$type: Schema.Types.ObjectId}
+        }
+        }
     }
 }); 
 
-exports.option = mongoose.model('option', optionSchema); 
+
+exports.option = mongoose.model('option', optionSchema);
+

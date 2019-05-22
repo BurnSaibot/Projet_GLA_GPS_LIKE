@@ -16,6 +16,7 @@
     "mongoose": "^5.5.7",
     "morgan": "~1.9.1",
     "ngraph.graph": "^18.0.0",
-    "ngraph.path": "^1.2.0"
+    "ngraph.path": "^1.2.0",
+    "xml2js": "^0.4.19"
   }
 }

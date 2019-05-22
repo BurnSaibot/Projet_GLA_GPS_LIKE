@@ -32,12 +32,9 @@ var itineraireSchema = new Schema({
     
 });
 
-itineraireSchema.post('save', function (itineraireSaved){
-    /* 
-        Quand un itinéraire est sauvegardé, on vérifie s'il n'y a pas plus de 10 itinéraires,
-        si c'est le cas, on supprime le plus vieux pour revenir à 10
-    */
-    itineraireSchema.find({id: req.session.user._id}).sort({date: 1})
+/*itineraireSchema.post('save', function (itineraireSaved){
+    
+    itineraireSchema.find({_id: itineraireSaved.utilisateur}).sort({date: 1})
     .then(function(search) {
         if (search.length > 10) {
             var id_to_remove = search[0]._id;
@@ -52,6 +49,6 @@ itineraireSchema.post('save', function (itineraireSaved){
     })
     //1 -> trié par ordre croissant
     
-})
+})*/
 
 exports.itineraire = mongoose.model('itineraire', itineraireSchema); 

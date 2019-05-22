@@ -25,6 +25,11 @@ app
 .put('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.updt)
 .delete('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.supprimerVehicule)
 
+.get('/itineraire', authentication.middleware.isLoggedIn, itineraire.getHistorique)
+.get('/itineraire/:id', authentication.middleware.isLoggedIn, itineraire.getInfo)
+.post('/itineraire', authentication.middleware.isLoggedIn, itineraire.create)
+.delete('/itineraire/:id', authentication.middleware.isLoggedIn, itineraire.delete)
+
 .get('/option', authentication.middleware.isLoggedIn, option.get)
 .put('/option', authentication.middleware.isLoggedIn, option.updtOption)
 

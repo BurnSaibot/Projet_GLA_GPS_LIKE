@@ -1,13 +1,20 @@
 var _ = require("./utils");
-var itineraire = require("../models/itineraire");
-var option = require("../models/option");
+var Itineraire = require("../models/itineraire").itineraire;
+var Option = require("../models/option").option;
+var Ville = require("../models/ville").ville;
+var Route = require("../models/route").route;
+var Troncon = require("../models/troncon").troncon;
+var path = require('ngraph.path');
+var createGraph = require('ngraph.graph');
 
 
 exports.getHistorique = function (req, res) {
         var userID = req.session.user._id;
         //const resultat = await 
-        itineraire
+        Itineraire
             .find({utilisateur: userID},"villeDepart villeArrivee date")
+            .sort({date: -1})
+            .limit(10)
             .populate("villeDepart")
             .populate("villeArrivee")
             .exec()
@@ -19,7 +26,7 @@ exports.getHistorique = function (req, res) {
             });
 };
 
-exports.create = function (req,res) {
+exports.create = function (req, res) {
     // check all boolean definition
     if (req.body.villeDepart === undefined) {
         _.response.sendError(res, "villeDepart : pas de valeur précisée.", 400);
@@ -73,14 +80,18 @@ exports.create = function (req,res) {
         return;
     }
 
-    option.create({
+    Option.create({
         plusCourt: req.body.plusCourt,
         plusRapide: req.body.plusRapide,
         sansRadar: req.body.sansRadar,
         sansPeage: req.body.sansPeage,
-        etapes: req.body.villesEtapes
+        touristique: req.body.touristique,
+        etapes: req.body.etapes,
+        villesEtapes : req.body.villesEtapes
     }).then(function (options){
-        return itineraire.create({
+        console.log("slt");
+        console.log(req.body);
+        return Itineraire.create({
             villeDepart: req.body.villeDepart,
             villeArrivee: req.body.villeArrivee,
             utilisateur: req.session.user._id,
@@ -91,13 +102,14 @@ exports.create = function (req,res) {
     }).then(function (data){
         _.response.sendObjectData(res, data);
     }).catch(function (err){
+        console.log("Erreur : " + err);
         _.response.sendError(res, err, 500);
     });
 };
 
 exports.getInfo = function (req, res) {
-    itineraire
-        .findById(req.params.itineraire)
+    Itineraire
+        .findById(req.params.id)
         .populate("villeDepart")
         .populate("villeArrivee")
         .populate("vehicule")
@@ -113,9 +125,8 @@ exports.getInfo = function (req, res) {
 };
 
 exports.delete = function(req, res) {
-    var id = req.params.itineraire;
-    var iti ;
-    itineraire
+    var id = req.params.id;
+    Itineraire
         .findByIdAndDelete(id)
         .then(function(found_itineraire){
             iti = found_itineraire;
@@ -128,4 +139,35 @@ exports.delete = function(req, res) {
         .catch(function (err){
             _.sendError(res, err, 500);
         });
+}
+
+exports.calculerItineraire = function (req,res) {
+    var graph = createGraph();
+    Ville
+    .find()
+    .then(function (villes) {
+        villes.forEach(function(elem){
+            graph.addNode(elem._id)
+        })
+        return Route.find()
+    })
+    .then( function (routes) {
+        routes.forEach( function(elem) {
+            graph.addLink(elem.ville1,elem.ville2,{weight: calculerCoutRoute(elem._id)})
+        })
+    })
+}
+
+var calculerCoutRoute = function(idr) {
+    var cout = 0;
+    Troncon.find({route : idr})
+    .then(function (troncons){
+        troncons.forEach(function(elem){
+            cout += elem.longueur;
+        })
+        return cout;
+    })
+    .catch(function (err){
+        throw new Error('Erreur lors du calcul du cout');
+    })
 }
