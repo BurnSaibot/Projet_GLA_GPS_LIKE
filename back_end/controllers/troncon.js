@@ -67,22 +67,31 @@ exports.createTroncon = function(req, res) {
 }
 
 exports.updtTroncon = function (req, res) {
-    var idt = req.params._id;
+    var idt = req.params.id;
+    if (req.body.vitesseMax <=0 ||req.body.vitesseMax > 130) {
+        _.response.sendError(res,'la vitesse ne doit pas dépasser 130',400)
+    }
     Troncon.findByIdAndUpdate(idt, { 
         "touristique": req.body.touristique,
         "vitesseMax": req.body.vitesseMax,
         "longueur": req.body.longueur,
         "radar": req.body.radar 
-        })
+    })
+    .then(function (result){
+        _.response.sendObjectData(res, result);
+    })
+    .catch(function (err){
+        _.response.sendError(res, err, 500);
+    })
 }
 
 exports.supprimerTroncon = function (req, res) {
-    var idt = req.params._id;
+    var idt = req.params.id;
     Troncon.findByIdAndDelete(idt, function (error) {
         if (error) {
             _.response.sendError(res, error, 500);
             return;
         }
-        _.response.sendSuccess(res, 'Troncon est supprimée.');
+        _.response.sendSuccess(res, 'Troncon supprimé.');
     })
 }

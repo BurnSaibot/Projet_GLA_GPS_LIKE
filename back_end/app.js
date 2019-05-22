@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var _ = require('./controllers/utils');
 
 var routes = require('./route.js');
 
@@ -29,15 +30,14 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", function(err){
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+/*app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+  // send err
+  _.response.sendError(res,err,500);
+});*/
 
 routes.initialize(app);
 
