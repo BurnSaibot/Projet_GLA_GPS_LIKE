@@ -21,6 +21,14 @@ var tronconSchema = new Schema({
     route: {
         type: Schema.Types.ObjectId,
         ref: 'route'
+    },
+    ville1: {
+        type: Schema.Types.ObjectId,
+        ref: 'ville'
+    },
+    ville2: {
+        type: Schema.Types.ObjectId,
+        ref: 'ville'
     }
 }); 
 

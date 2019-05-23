@@ -9,7 +9,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var _ = require('./controllers/utils');
 var mapURL = process.argv[2];
-var generateMap = require('./controllers/generator');
+//var generateMap = require('./controllers/generator');
 var routes = require('./route.js');
 
 var app = express();
@@ -39,7 +39,7 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", function(err){
   // send err
   _.response.sendError(res,err,500);
 });*/
-generateMap(mapURL);
+//generateMap(mapURL);
 routes.initialize(app);
 
 module.exports = app;

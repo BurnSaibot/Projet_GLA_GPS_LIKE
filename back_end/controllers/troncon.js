@@ -53,7 +53,9 @@ exports.createTroncon = function(req, res) {
         vitesseMax: req.body.vitesseMax,
         longueur: req.body.longueur,
         radar: req.body.radar,
-        route: req.params.idr
+        route: req.params.idr,
+        ville1: req.body.ville1,
+        ville2: req.body.ville2
     });
     // save it
     newTroncon.save(function (error,troncon) {
@@ -75,7 +77,10 @@ exports.updtTroncon = function (req, res) {
         "touristique": req.body.touristique,
         "vitesseMax": req.body.vitesseMax,
         "longueur": req.body.longueur,
-        "radar": req.body.radar 
+        "radar": req.body.radar,
+        "ville1": req.body.ville1,
+        "ville2": req.body.ville2
+        
     })
     .then(function (result){
         _.response.sendObjectData(res, result);

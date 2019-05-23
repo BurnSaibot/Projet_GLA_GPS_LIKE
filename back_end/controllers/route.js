@@ -42,9 +42,7 @@ exports.createRoute = function (req, res) {
     // create new road
     var newRoute = new Route({
         nom: req.body.nom,
-        taille: req.body.taille,
-        ville1: req.body.ville1,
-        ville2: req.body.ville2
+        taille: req.body.taille
     });
 
     // save it
@@ -72,9 +70,7 @@ exports.updtRoute = function (req, res) {
     }
     Route.findByIdAndUpdate(idr, { 
         "nom": req.body.nom, 
-        "taille": req.body.taille, 
-        "ville1": req.body.ville1, 
-        "ville2": req.body.ville2 
+        "taille": req.body.taille
     }).then(function (route){
         console.log(route);
         _.response.sendObjectData(res, route);

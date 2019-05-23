@@ -15,15 +15,8 @@ var waySchema = new Schema({
     taille: {
         type: String,
         enum: Object.values(typeRoute)
-    },
-    ville1: {
-        type: Schema.Types.ObjectId,
-        ref: 'ville'
-    },
-    ville2: {
-        type: Schema.Types.ObjectId,
-        ref: 'ville'
-    }
+    }   
+    
     // pour trouver les tronçons d'une route r, on cherche juste les tronçons qui ont pour champ route la route r
 }); 
 
