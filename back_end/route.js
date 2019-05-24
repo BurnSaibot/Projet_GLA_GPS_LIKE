@@ -46,6 +46,7 @@ app
 .delete('/route/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, route.supprimerRoute)
 
 .get('/troncon', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.getAll)
+.get('/troncon/page/:page', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.getAllPaginate)
 .get('/troncon/route/:idr', authentication.middleware.isLoggedIn, troncon.getAllforOne)
 .post('/troncon/:idr', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.createTroncon)
 .get('/troncon/:id', authentication.middleware.isLoggedIn, troncon.infoTroncon)

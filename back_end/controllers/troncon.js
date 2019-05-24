@@ -2,9 +2,25 @@ var _ = require('./Utils.js');
 var Troncon = require('../models/troncon.js').troncon;
 
 exports.getAll = function(req, res) {
+    //depreciated, DOES NOT SCALE
+    
+    Troncon
+        .find({})
+        .then(function (result){
+            _.response.sendObjectData(res,result);
+        })
+        .catch(function (err){
+            _.response.sendError(res, err, 500);
+        });
+}
+exports.getAllPaginate = function(req, res) {
+    if (isNaN(req.params.page)) {
+        _.response.sendError(res, 'page not a number', 401);
+    }
     Troncon
         .find()
-        .populate('route')
+        .limit(20)
+        .skip(20 * (req.params.page - 1))
         .then(function (result){
             _.response.sendObjectData(res,result);
         })

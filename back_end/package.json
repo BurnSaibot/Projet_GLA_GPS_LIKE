@@ -14,9 +14,11 @@
     "express-session": "^1.16.1",
     "http-errors": "~1.6.3",
     "mongoose": "^5.5.7",
+    "mongoose-paginate": "^5.0.3",
     "morgan": "~1.9.1",
     "ngraph.graph": "^18.0.0",
     "ngraph.path": "^1.2.0",
+    "xml-flow": "^1.0.2",
     "xml2js": "^0.4.19"
   }
 }
