@@ -1,77 +1,53 @@
-var createXmlStream = require('xml-flow');
-var { createReadStream } = require('fs');
-
+var xml2js = require('xml2js').parseString;
+var fs = require('fs');
 var Route = require('../models/route').route;
 var Troncon = require('../models/troncon').troncon;
 var Ville = require('../models/ville').ville;
 
-// Store ids associated to names (hopefully unique ?)
-const citiesCache = {};
-
-async function cleaupDatabase() {
-    await Ville.remove({})
-    await Troncon.remove({});
-    await Route.remove({});
-    return true;
-}
-
-function importCities(url) {
-    const dataStream = createReadStream(url);
-    const xmlStream = createXmlStream(dataStream);
-
-    xmlStream.on('tag:ville', async function(v) {
-        const city = await Ville.create({
-            nom: v.nom,
-            taille: v.type,
-            touristique: v.touristique == 'oui'
-        })
-        citiesCache[city.nom] = city._id;
-    });
-
-    return new Promise((resolve, reject) => {
-        xmlStream.on('end', resolve);
-        xmlStream.on('error', reject);
-    });
-} 
-
-function importRoutesAndSections(url) {
-    const dataStream = createReadStream(url);
-    const xmlStream = createXmlStream(dataStream);
-
-    xmlStream.on('tag:route', async function(r) {
-        const route = await Route.create({
-            nom: r.nom,
-            taille: r.type
-        });
-        
-        r.troncon.forEach(function (t){
-            Troncon.create({
-                ville1: citiesCache[t.ville1],
-                ville2: citiesCache[t.ville2],
-                route: route._id,
-                peage: t.peage === 'oui',
-                radar: t.radar === 'oui',
-                touristique: t.touristique === 'oui',
-                longueur: t.longueur,
-                vitesseMax: t.vitesse,
+module.exports = function(mapURL) {
+    var map;
+    //reading a file
+    fs.readFileAsync(mapURL)
+    //parsing it
+    .then( function(xmlContent){
+        console.log("started to parse")
+        return new Promise(function(resolve, reject)
+        {
+            xml2js(xmlContent, function(err, result){
+                if(err){
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
             });
         });
-    });
-
-    return new Promise((resolve, reject) => {
-        xmlStream.on('end', resolve);
-        xmlStream.on('error', reject);
-    });
-} 
-
-module.exports = async function(url) {
-    await cleaupDatabase();
-    await importCities(url);
-    await importRoutesAndSections(url);
+    })
+    .then(function (content) {
+        //map = content;
+        content.reseau.ville.forEach(function (v) {
+            console.log(v);
+            let t = (v.type[0] == 'oui');
+            Ville.create({
+                nom : v.nom[0],
+                taille : v.type[0],
+                touristique : t
+            })
+        })
+        content.reseau.
+    })
+    .catch(function (err){
+        console.log(err);
+    })
 }
 
-// A FAIRE
-// const importMapData = require('generator.js');
-// await importMapData(xmlUrl);
-// console.log('IMPORT TERMINE');
-// server.start();
+fs.readFileAsync = function (filename) {
+    console.log("started to read");
+    return new Promise((resolve, reject) => {
+        fs.readFile(filename, (err, buffer) => {
+            if (err) 
+                reject(err); 
+            resolve(buffer);
+        });
+    });
+};
