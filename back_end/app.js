@@ -9,6 +9,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var _ = require('./controllers/utils');
 var mapURL = process.argv[2];
+const importMapData = require('./controllers/generator');
 //var generateMap = require('./controllers/generator');
 var routes = require('./route.js');
 
@@ -30,6 +31,14 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", function(err){
   if (err) throw err;
 });
 
+var initializeServer = async function (){
+  await importMapData(mapURL);
+  console.log('Import terminé');
+  routes.initialize(app);
+  http.createServer(app).listen(app.get('port'), function () {
+	  console.log('Express server listening on port ' + app.get('port'));
+  });
+}
 // error handler
 /*app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -40,11 +49,5 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", function(err){
   _.response.sendError(res,err,500);
 });*/
 //generateMap(mapURL);
-routes.initialize(app);
+initializeServer();
 
-module.exports = app;
-
-
-http.createServer(app).listen(app.get('port'), function () {
-	console.log('Express server listening on port ' + app.get('port'));
-});
