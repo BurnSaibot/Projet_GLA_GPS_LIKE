@@ -6,6 +6,7 @@ var Troncon = require('../models/troncon').troncon;
 var Ville = require('../models/ville').ville;
 
 // Store ids associated to names (hopefully unique ?)
+const promiseArray = [];
 const citiesCache = {};
 
 async function cleaupDatabase() {
@@ -14,22 +15,32 @@ async function cleaupDatabase() {
     await Route.remove({});
     return true;
 }
+const handlingCity = async function(v) {
+        
+    const city = await Ville.create({
+        nom: v.nom,
+        taille: v.type,
+        touristique: v.touristique === 'oui'
+    })
+    citiesCache[city.nom] = city._id;
+};
+
 
 function importCities(url) {
     const dataStream = createReadStream(url);
     const xmlStream = createXmlStream(dataStream);
-
-    xmlStream.on('tag:ville', async function(v) {
-        const city = await Ville.create({
-            nom: v.nom,
-            taille: v.type,
-            touristique: v.touristique == 'oui'
-        })
-        citiesCache[city.nom] = city._id;
+    xmlStream.on('tag:ville', function(v){
+        promiseArray.push(handlingCity(v));
     });
 
     return new Promise((resolve, reject) => {
-        xmlStream.on('end', resolve);
+        xmlStream.on('end', function(){
+            Promise
+            .all(promiseArray)
+            .then(() => {
+                resolve();
+            })
+        });
         xmlStream.on('error', reject);
     });
 } 
@@ -67,8 +78,11 @@ function importRoutesAndSections(url) {
 module.exports = async function(url) {
     await cleaupDatabase();
     await importCities(url);
+    console.log()
     await importRoutesAndSections(url);
 }
+
+
 
 // A FAIRE
 // const importMapData = require('generator.js');
