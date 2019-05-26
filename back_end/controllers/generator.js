@@ -18,14 +18,15 @@ async function cleaupDatabase() {
 function importCities(url) {
     const dataStream = createReadStream(url);
     const xmlStream = createXmlStream(dataStream);
-
     xmlStream.on('tag:ville', async function(v) {
+        
         const city = await Ville.create({
             nom: v.nom,
             taille: v.type,
-            touristique: v.touristique == 'oui'
+            touristique: v.touristique === 'oui'
         })
         citiesCache[city.nom] = city._id;
+        xmlStream.resume();
     });
 
     return new Promise((resolve, reject) => {
@@ -67,6 +68,7 @@ function importRoutesAndSections(url) {
 module.exports = async function(url) {
     await cleaupDatabase();
     await importCities(url);
+    console.log()
     await importRoutesAndSections(url);
 }
 

@@ -141,33 +141,46 @@ exports.delete = function(req, res) {
         });
 }
 
-exports.calculerItineraire = function (req,res) {
+exports.calculerItineraire = async function (req,res) {
+    console.log("-- Debut du calcul --");
+    var id_i = req.params.id;
+    var  itineraire = await
+    Itineraire
+        .findById(id_i)
+        .populate('optionsAssociees')
+        .populate('villeDepart')
+        .populate('villeArrivee')
+        .catch( function(err) {
+            _.response.sendError(res,err,500);
+        })
+    console.log("-- Itinéraire trouvé --");
+    console.log(itineraire);
     var graph = createGraph();
-    Ville
-    .find()
-    .then(function (villes) {
-        villes.forEach(function(elem){
-            graph.addNode(elem._id)
-        })
-        return Route.find()
+    // pour ne pas casser la mémoire du serveur on utilise un stream
+    var villeStream = Ville.find({}).cursor();
+    villeStream.on('data',function(vi){
+        graph.addNode(vi._id);
     })
-    .then( function (routes) {
-        routes.forEach( function(elem) {
-            graph.addLink(elem.ville1,elem.ville2,{weight: calculerCoutRoute(elem._id)})
+    villeStream.on('end',function(){
+        var trStream = Troncon.find({}).cursor();
+        trStream.on('data',function(tr){
+            console.log(tr);
+            let cout = tr.longueur
+            graph.addLink(tr.ville1, tr.ville2, {weight : cout});
+        })
+        trStream.on('end',function(){
+            let pathFinder = path.aStar(graph, {
+                // We tell our pathfinder what should it use as a distance function:
+                distance(fromNode, toNode, link) {
+                  // We don't really care about from/to nodes in this case,
+                  // as link.data has all needed information:
+                  return link.data.weight;
+                }
+              });
+              let result = pathFinder.find(itineraire.villeDepart, itineraire.villeArrivee);
+              _.response.sendObjectData(res,result);
         })
     })
+
 }
 
-var calculerCoutRoute = function(idr) {
-    var cout = 0;
-    Troncon.find({route : idr})
-    .then(function (troncons){
-        troncons.forEach(function(elem){
-            cout += elem.longueur;
-        })
-        return cout;
-    })
-    .catch(function (err){
-        throw new Error('Erreur lors du calcul du cout');
-    })
-}
