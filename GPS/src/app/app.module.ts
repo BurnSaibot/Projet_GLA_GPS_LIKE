@@ -1,16 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { AlertModule } from 'ngx-bootstrap';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { InputUserDataFormComponent } from './input-user-data-form/input-user-data-form.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    InputUserDataFormComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule
+    AlertModule.forRoot(),
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent]
