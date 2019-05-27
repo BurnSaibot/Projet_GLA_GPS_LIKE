@@ -18,6 +18,10 @@ var tronconSchema = new Schema({
         type: Boolean,
         required: true
     },
+    peage: {
+        type: Boolean,
+        required: true
+    },
     route: {
         type: Schema.Types.ObjectId,
         ref: 'route'
