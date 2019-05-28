@@ -32,7 +32,8 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", function(err){
 });
 
 var initializeServer = async function (){
-  await importMapData(mapURL);
+  
+  //await importMapData(mapURL);
   console.log('Import terminé');
   routes.initialize(app);
   http.createServer(app).listen(app.get('port'), function () {

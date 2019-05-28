@@ -70,6 +70,7 @@ exports.createTroncon = function(req, res) {
         longueur: req.body.longueur,
         radar: req.body.radar,
         route: req.params.idr,
+        peage: req.body.peage,
         ville1: req.body.ville1,
         ville2: req.body.ville2
     });

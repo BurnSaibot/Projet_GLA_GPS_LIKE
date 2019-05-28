@@ -143,6 +143,7 @@ exports.delete = function(req, res) {
 
 exports.calculerItineraire = async function (req,res) {
     console.log("-- Debut du calcul --");
+    
     var id_i = req.params.id;
     var  itineraire = await
     Itineraire
@@ -153,21 +154,33 @@ exports.calculerItineraire = async function (req,res) {
         .catch( function(err) {
             _.response.sendError(res,err,500);
         })
-    console.log("-- Itinéraire trouvé --");
-    console.log(itineraire);
     var graph = createGraph();
     // pour ne pas casser la mémoire du serveur on utilise un stream
     var villeStream = Ville.find({}).cursor();
+
+    const tab_city = [];
     villeStream.on('data',function(vi){
-        graph.addNode(vi._id);
+        graph.addNode(vi._id,{nom: vi.nom})
     })
+
+    //une fois qu'on a rajouté tous les noeuds du graph, on ajoute les liens
     villeStream.on('end',function(){
         var trStream = Troncon.find({}).cursor();
         trStream.on('data',function(tr){
-            console.log(tr);
-            let cout = tr.longueur
-            graph.addLink(tr.ville1, tr.ville2, {weight : cout});
+            if (itineraire.optionsAssociees.sansRadar && tr.radar)
+                return;
+            if (itineraire.optionsAssociees.sansPeage && tr.peage)
+                return;
+            let cout ;
+            if (itineraire.optionsAssociees.plusCourt)
+                cout = tr.longueur;
+            else if (itineraire.optionsAssociees.plusRapide)
+                cout = tr.longueur / (tr.vitesseMax -5);
+            graph.addLink(tr.ville1, tr.ville2, {weight : cout, id_tr : tr._id});
+            graph.addLink(tr.ville2, tr.ville1, {weight : cout, id_tr : tr._id});
         })
+
+        //puid on calcule l'itinéraire
         trStream.on('end',function(){
             let pathFinder = path.aStar(graph, {
                 // We tell our pathfinder what should it use as a distance function:
@@ -177,10 +190,15 @@ exports.calculerItineraire = async function (req,res) {
                   return link.data.weight;
                 }
               });
-              let result = pathFinder.find(itineraire.villeDepart, itineraire.villeArrivee);
+              let way = pathFinder.find(itineraire.villeDepart._id, itineraire.villeArrivee._id);
+              const result = [];
+              way.forEach(function(elem){
+                  result.push({id : elem.id, nom: elem.data.nom})
+              })
+              console.log("-- Find du calcul --");
+              // pour enfin le renvoyer
               _.response.sendObjectData(res,result);
         })
     })
 
 }
-
