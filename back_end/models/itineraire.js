@@ -24,11 +24,7 @@ var itineraireSchema = new Schema({
     optionsAssociees: {
         type: Schema.Types.ObjectId,
         ref: 'option'
-    },
-    villeEtapes: [{
-        type: Schema.Types.ObjectId,
-        ref: 'ville'
-    }]
+    }
     
 });
 

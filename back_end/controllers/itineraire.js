@@ -154,16 +154,55 @@ exports.calculerItineraire = async function (req,res) {
         .catch( function(err) {
             _.response.sendError(res,err,500);
         })
-    global.graph.forEachNode(function(node) {
-    })
+    const result = [];
+    if (itineraire.optionsAssociees.etapes) {
+        var way = calcul(itineraire.villeDepart,itineraire.optionsAssociees.villesEtapes[0],itineraire.optionsAssociees);
+        way.forEach(function(elem){
+            result.push({id : elem.id, nom: elem.data.nom})
+        })
+        var old;
+        itineraire.optionsAssociees.villesEtapes.forEach(function(ve,index){
+            if (index > 0 ){
+                way = calcul(ve,old,itineraire.optionsAssociees);
+                way.forEach(function(ville,index2){
+                    if (index2 > 0) {
+                        result.push({id : ville.id, nom: ville.data.nom})
+                    }
+                })
+            }
+            old = ve;
+        })
+        way = calcul(old,itineraire.villeArrivee,itineraire.optionsAssociees);
+        way.forEach(function(elem,index){
+            if (index > 0) {
+                result.push({id : elem.id, nom: elem.data.nom})
+            }
+        })
+    } else{
+        var way = calcul(itineraire.villeDepart,itineraire.villeArrivee,itineraire.optionsAssociees);
+        way.forEach(function(elem){
+            result.push({id : elem.id, nom: elem.data.nom})
+        })
+    }
+
+    
+    console.log("-- Find du calcul --");
+    // pour enfin le renvoyer
+    _.response.sendObjectData(res,result);
+
+}
+
+function calcul(depart,fin,options){
+    console.log(depart,fin,options)
     let pathFinder = path.aStar(global.graph, {
+        oriented : false,
         // We tell our pathfinder what should it use as a distance function:
         distance(fromNode, toNode,link) {
-            if (itineraire.optionsAssociees.sansRadar && link.data.radar)
+            if (options.sansRadar && link.data.radar)
                 return Infinity;
-            if (itineraire.optionsAssociees.sansPeage && link.data.peage)
+            if (options.sansPeage && link.data.peage)
                 return Infinity;    
-            if (itineraire.optionsAssociees.plusCourt){
+            if (options.plusCourt){
                 return link.data.longueur;
             } else {
                 return link.data.longueur / (link.data.vitesse - 5 );
@@ -188,13 +227,5 @@ exports.calculerItineraire = async function (req,res) {
             return Math.round(d);
         }
     });
-    let way = pathFinder.find(itineraire.villeDepart._id, itineraire.villeArrivee._id);
-    const result = [];
-    way.forEach(function(elem){
-        result.push({id : elem.id, nom: elem.data.nom})
-    })
-    console.log("-- Find du calcul --");
-    // pour enfin le renvoyer
-    _.response.sendObjectData(res,result);
-
+    return pathFinder.find(depart._id, fin._id);
 }

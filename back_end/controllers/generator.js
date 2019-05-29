@@ -107,14 +107,14 @@ exports.initGraph = function(){
                     radar : tr.radar,
                     peage : tr.peage
                 });
-                graph.addLink(tr.ville2, tr.ville1,
+                /*graph.addLink(tr.ville2, tr.ville1,
                     {
                         longueur : tr.longueur,
                         vitesse: tr.vitesseMax,
                         id_tr : tr._id,
                         radar : tr.radar,
                         peage : tr.peage
-                    });
+                    });*/
         })
         return new Promise((resolve, reject) => {
             trStream.on('end', () =>
