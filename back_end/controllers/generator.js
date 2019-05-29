@@ -5,7 +5,6 @@ var Route = require('../models/route').route;
 var Troncon = require('../models/troncon').troncon;
 var Ville = require('../models/ville').ville;
 
-var path = require('ngraph.path');
 var createGraph = require('ngraph.graph');
 
 // Store ids associated to names (hopefully unique ?)
@@ -96,10 +95,10 @@ exports.initGraph = function(){
     })
 
     //une fois qu'on a rajouté tous les noeuds du graph, on ajoute les liens
-    villeStream.on('end',function(){
+    villeStream.on('end',  function(){
         var trStream = Troncon.find({}).cursor();
-        trStream.on('data',function(tr){
-            graph.addLink(tr.ville1, tr.ville2,
+        trStream.on('data',async function(tr){
+            await graph.addLink(tr.ville1, tr.ville2,
                 {
                     longueur : tr.longueur,
                     vitesse: tr.vitesseMax,
@@ -107,14 +106,14 @@ exports.initGraph = function(){
                     radar : tr.radar,
                     peage : tr.peage
                 });
-                /*graph.addLink(tr.ville2, tr.ville1,
-                    {
-                        longueur : tr.longueur,
-                        vitesse: tr.vitesseMax,
-                        id_tr : tr._id,
-                        radar : tr.radar,
-                        peage : tr.peage
-                    });*/
+            await graph.addLink(tr.ville2, tr.ville1,
+                {
+                    longueur : tr.longueur,
+                    vitesse: tr.vitesseMax,
+                    id_tr : tr._id,
+                    radar : tr.radar,
+                    peage : tr.peage
+                });
         })
         return new Promise((resolve, reject) => {
             trStream.on('end', () =>
