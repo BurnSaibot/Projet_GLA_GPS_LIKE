@@ -23,7 +23,9 @@ const handlingCity = async function(v) {
     const city = await Ville.create({
         nom: v.nom,
         taille: v.type,
-        touristique: v.touristique === 'oui'
+        touristique: v.touristique === 'oui',
+        longitude: v.coordonnees.longitude,
+        latitude: v.coordonnees.latitude
     })
     citiesCache[city.nom] = city._id;
 };
@@ -90,7 +92,7 @@ exports.initGraph = function(){
     var villeStream = Ville.find({}).cursor();
     
     villeStream.on('data',function(vi){
-        graph.addNode(vi._id,{nom: vi.nom})
+        graph.addNode(vi._id,{nom : vi.nom,longitude : vi.longitude,latitude : vi.latitude})
     })
 
     //une fois qu'on a rajouté tous les noeuds du graph, on ajoute les liens

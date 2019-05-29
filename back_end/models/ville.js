@@ -21,6 +21,14 @@ var citySchema = new Schema({
     touristique: {
         type:Boolean,
         required:true,
+    },
+    longitude : {
+        type: Number,
+        required:true,
+    },
+    latitude : {
+        type: Number,
+        required:true,
     }
     /* 
     pour les villes entrantes et sortante, on cherchera juste dans route de la maniere suivante:

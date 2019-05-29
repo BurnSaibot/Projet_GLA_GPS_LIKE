@@ -34,7 +34,7 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", { useNewUrlParser: true }
 
 var initializeServer = async function (){
   
-  await importMapData(mapURL);
+  //await importMapData(mapURL);
   console.log('Import terminé');
   await initGraph();
   console.log('Graph initialisé : ');

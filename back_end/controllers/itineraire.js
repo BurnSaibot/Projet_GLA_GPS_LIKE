@@ -158,7 +158,7 @@ exports.calculerItineraire = async function (req,res) {
     })
     let pathFinder = path.aStar(global.graph, {
         // We tell our pathfinder what should it use as a distance function:
-        distance(fromNode, toNode, link) {
+        distance(fromNode, toNode,link) {
             if (itineraire.optionsAssociees.sansRadar && link.data.radar)
                 return Infinity;
             if (itineraire.optionsAssociees.sansPeage && link.data.peage)
@@ -168,6 +168,24 @@ exports.calculerItineraire = async function (req,res) {
             } else {
                 return link.data.longueur / (link.data.vitesse - 5 );
             }
+        }
+    ,
+        heuristic(fromNode, toNode) {
+            // this is where we "guess" distance between two nodes.
+            const toRad = (val) => val * Math.PI / 180;
+            const R = 6371000; // m
+
+            const dLat = toRad(toNode.data.latitude - fromNode.data.latitude);
+            const dLon = toRad(toNode.data.longitude - fromNode.data.longitude);
+            const lat1 = toRad(fromNode.data.latitude);
+            const lat2 = toRad(toNode.data.latitude);
+
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) 
+                * Math.cos(lat1) * Math.cos(lat2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const d = R * c;
+            return Math.round(d);
         }
     });
     let way = pathFinder.find(itineraire.villeDepart._id, itineraire.villeArrivee._id);
