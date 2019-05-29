@@ -16,7 +16,7 @@ var routes = require('./route.js');
 
 var app = express();
 
-app.set('port', process.env.PORT || 3100);
+app.set('port', process.env.PORT || 3000);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -33,9 +33,11 @@ mongoose.connect("mongodb://localhost:27017/GPS_LIKE", { useNewUrlParser: true }
 });
 
 var initializeServer = async function (){
-  
-  //await importMapData(mapURL);
-  console.log('Import terminé');
+  console.log(mapURL);
+  if (mapURL !== undefined) {
+    await importMapData(mapURL);
+    console.log('Import terminé');
+  }
   await initGraph();
   console.log('Graph initialisé : ');
   routes.initialize(app);

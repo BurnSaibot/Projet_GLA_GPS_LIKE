@@ -98,6 +98,7 @@ exports.initGraph = function(){
     villeStream.on('end',  function(){
         var trStream = Troncon.find({}).cursor();
         trStream.on('data',async function(tr){
+            
             await graph.addLink(tr.ville1, tr.ville2,
                 {
                     longueur : tr.longueur,
