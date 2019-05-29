@@ -154,51 +154,29 @@ exports.calculerItineraire = async function (req,res) {
         .catch( function(err) {
             _.response.sendError(res,err,500);
         })
-    var graph = createGraph();
-    // pour ne pas casser la mémoire du serveur on utilise un stream
-    var villeStream = Ville.find({}).cursor();
-
-    const tab_city = [];
-    villeStream.on('data',function(vi){
-        graph.addNode(vi._id,{nom: vi.nom})
+    global.graph.forEachNode(function(node) {
     })
-
-    //une fois qu'on a rajouté tous les noeuds du graph, on ajoute les liens
-    villeStream.on('end',function(){
-        var trStream = Troncon.find({}).cursor();
-        trStream.on('data',function(tr){
-            if (itineraire.optionsAssociees.sansRadar && tr.radar)
-                return;
-            if (itineraire.optionsAssociees.sansPeage && tr.peage)
-                return;
-            let cout ;
-            if (itineraire.optionsAssociees.plusCourt)
-                cout = tr.longueur;
-            else if (itineraire.optionsAssociees.plusRapide)
-                cout = tr.longueur / (tr.vitesseMax -5);
-            graph.addLink(tr.ville1, tr.ville2, {weight : cout, id_tr : tr._id});
-            graph.addLink(tr.ville2, tr.ville1, {weight : cout, id_tr : tr._id});
-        })
-
-        //puid on calcule l'itinéraire
-        trStream.on('end',function(){
-            let pathFinder = path.aStar(graph, {
-                // We tell our pathfinder what should it use as a distance function:
-                distance(fromNode, toNode, link) {
-                  // We don't really care about from/to nodes in this case,
-                  // as link.data has all needed information:
-                  return link.data.weight;
-                }
-              });
-              let way = pathFinder.find(itineraire.villeDepart._id, itineraire.villeArrivee._id);
-              const result = [];
-              way.forEach(function(elem){
-                  result.push({id : elem.id, nom: elem.data.nom})
-              })
-              console.log("-- Find du calcul --");
-              // pour enfin le renvoyer
-              _.response.sendObjectData(res,result);
-        })
+    let pathFinder = path.aStar(global.graph, {
+        // We tell our pathfinder what should it use as a distance function:
+        distance(fromNode, toNode, link) {
+            if (itineraire.optionsAssociees.sansRadar && link.data.radar)
+                return Infinity;
+            if (itineraire.optionsAssociees.sansPeage && link.data.peage)
+                return Infinity;    
+            if (itineraire.optionsAssociees.plusCourt){
+                return link.data.longueur;
+            } else {
+                return link.data.longueur / (link.data.vitesse - 5 );
+            }
+        }
+    });
+    let way = pathFinder.find(itineraire.villeDepart._id, itineraire.villeArrivee._id);
+    const result = [];
+    way.forEach(function(elem){
+        result.push({id : elem.id, nom: elem.data.nom})
     })
+    console.log("-- Find du calcul --");
+    // pour enfin le renvoyer
+    _.response.sendObjectData(res,result);
 
 }

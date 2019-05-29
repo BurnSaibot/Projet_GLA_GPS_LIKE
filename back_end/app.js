@@ -9,7 +9,8 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var _ = require('./controllers/utils');
 var mapURL = process.argv[2];
-const importMapData = require('./controllers/generator');
+const importMapData = require('./controllers/generator').initDB;
+const initGraph = require('./controllers/generator').initGraph;
 //var generateMap = require('./controllers/generator');
 var routes = require('./route.js');
 
@@ -27,14 +28,16 @@ app.use(session({secret: 'GPS-LIKE\'s secret',saveUninitialized: false, resave: 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 //=====DBConnection=====
-mongoose.connect("mongodb://localhost:27017/GPS_LIKE", function(err){
+mongoose.connect("mongodb://localhost:27017/GPS_LIKE", { useNewUrlParser: true }, function(err){
   if (err) throw err;
 });
 
 var initializeServer = async function (){
   
-  //await importMapData(mapURL);
+  await importMapData(mapURL);
   console.log('Import terminé');
+  await initGraph();
+  console.log('Graph initialisé : ');
   routes.initialize(app);
   http.createServer(app).listen(app.get('port'), function () {
 	  console.log('Express server listening on port ' + app.get('port'));
