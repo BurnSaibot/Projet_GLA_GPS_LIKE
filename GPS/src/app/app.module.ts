@@ -22,7 +22,6 @@ import {
   MatCardModule,
   MatMenuModule
 } from '@angular/material';
-import { MenuComponent } from './menu/menu.component';
 import { InscriptionComponent } from './user/inscription/inscription.component';
 import { HistoriqueComponent } from './user/historique/historique.component';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -35,7 +34,6 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent,
     InscriptionComponent,
     HistoriqueComponent,
     NavigationComponent,
@@ -65,7 +63,11 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent, 
+    InscriptionComponent, 
+    UserComponent
+  ]
 })
 export class AppModule 
 {

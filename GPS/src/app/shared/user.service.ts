@@ -18,11 +18,11 @@ export class UserService {
 
   postUser(user: User)
   {
-    return this.http.post(environment.api +'/inscription', user);
+    return this.http.post(environment.api +'inscription', user);
   }
-
+/* méthode de login si les tokens jwt avaient été utilisés en backend
   login(authCredentials) {
-    //return this.http.post(environment.api + '/authenticate', authCredentials,this.noAuthHeader);
+    return this.http.post(environment.api + '/authenticate', authCredentials,this.noAuthHeader);
   }
  
  setToken(token: string) {
@@ -35,5 +35,6 @@ export class UserService {
  
   deleteToken() {
     localStorage.removeItem('token');
-  }
+    
+  }*/
 }

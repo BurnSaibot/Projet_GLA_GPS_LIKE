@@ -240,8 +240,8 @@ function getInfoItineraire(req, res) {
         .find({itineraire: idi})
         .populate('itineraire')
         .then(function (result){
-            var vd = result.villeDepart;
-            var va = result.villeArrivee;
+            var vd = get_nom_ville(result.villeDepart);
+            var va = get_nom_ville(result.villeArrivee);
             var option = result.optionsAssociees;
            
             new Promise(function(resolve, reject){
@@ -258,10 +258,28 @@ function getInfoItineraire(req, res) {
         });
 }
 
+get_nom_ville = function(idv) {
+    Ville.findById(idv, function(err, res){
+        if (err) {
+            _.response.sendError(res, err, 500);
+        }
+        return res.nom;
+    })
+}
+get_id_ville = function(nomv) {
+    Ville.find({nom: nomv}, function(err, res){
+        if (err) {
+            _.response.sendError(res, err, 500); 
+        }
+        return res._id;
+    })
+
+}
 
 get_troncon = function (vd, va, lt, ville_marquee) {
     // console.log(' = = = = = = = = = = = = = = = = = = = ');
-    Troncon.find({ "ville1": vd }, function (err, result) {
+    var idv = get_id_ville(vd);
+    Troncon.find({ "ville1": idv }, function (err, result) {
         if (err) {
             _.response.sendError(res, 'pas de troncon spécifiée', 500);
         }
@@ -272,19 +290,21 @@ get_troncon = function (vd, va, lt, ville_marquee) {
 // a recursive function to browse all paths and find possible paths
 calculer = function (result, va, lt, ville_marquee) {
     result.forEach(function (t) {
+        var nom_ville1 = get_nom_ville(t.ville1);
+        var nom_ville2 = get_nom_ville(t.ville2);
         var tmp_lt = lt.slice(0);
         var tmp_vm = ville_marquee.slice(0);
-        if (t.ville2 === va) {
+        if (nom_ville2 === va) {
             tmp_lt.push(t);
             chemins.push(tmp_lt);
             return;
         }
-        else if (found(tmp_vm, t.ville2)) {
+        else if (found(tmp_vm, nom_ville2)) {
             return;
         } else {
-            tmp_vm.push(t.ville1);
+            tmp_vm.push(nom_ville1);
             tmp_lt.push(t);
-            get_troncon(t.ville2, va, tmp_lt, tmp_vm);
+            get_troncon(nom_ville2, va, tmp_lt, tmp_vm);
         }
     });
 }
@@ -356,7 +376,7 @@ tri_plus_court = function(c) {
 temps_total = function(liste_troncon) {
     var temps = 0.0;
     liste_troncon.forEach(tron => {
-        temps = temps + tron.longueur/tron.vitesse;
+        temps = temps + tron.longueur/tron.vitesseMax;
     });
     // console.log(temps);
     return temps;
@@ -384,7 +404,7 @@ tri_plus_rapide = function(c) {
 sans_radars = function(liste_troncon) {
     var i = 0;
     while (i<liste_troncon.length) {
-        if (liste_troncon[i].radar == "oui") {
+        if (liste_troncon[i].radar) {
             break;
         }else {
             i = i+1;
@@ -413,7 +433,7 @@ tri_sans_radars = function(c) {
 sans_peages = function(liste_troncon) {
     var i = 0;
     while (i<liste_troncon.length) {
-        if (liste_troncon[i].payant == "oui") {
+        if (liste_troncon[i].peage) {
             break;
         }else {
             i = i+1;
@@ -442,7 +462,7 @@ tri_sans_peages = function(c) {
 touristique_total = function(liste_troncon) {
     var t = 0;
     liste_troncon.forEach(tron => {
-        if (tron.touristique === "oui") {
+        if (tron.touristique) {
             t = t + 1;
         }
     });

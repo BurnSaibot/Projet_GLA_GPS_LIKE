@@ -10,7 +10,7 @@ export class HistoriqueService {
   constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) { }
     getHistorique()
     {
-      return this.http.get(environment.api + '/itineraire');
+      return this.http.get(environment.api + 'itineraire');
     }
   
 }
