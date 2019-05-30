@@ -1,14 +1,33 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>GPS</title>
-  <base href="/">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
-</html>
+<form #inscrForm="ngForm" (ngSubmit)="inscrForm.valid && onSubmit(inscrForm)">
+  <input type="text" #nom="ngModel" [(ngModel)]="userService.selectedUser.nom" name="nom" placeholder="Nom"
+  required  [ngClass]="{'invalid-textbox' :inscrForm.submitted && !nom.valid }">
+  <div *ngIf="inscrForm.submitted && !nom.valid">
+    <label class="validation-message">Nom requis.</label>
+  </div>
+  <input type="text" #prenom="ngModel" [(ngModel)]="userService.selectedUser.prenom" name="prenom" placeholder="Prenom"
+  required  [ngClass]="{'invalid-textbox' :inscrForm.submitted && !prenom.valid }">
+  <div *ngIf="inscrForm.submitted && !prenom.valid">
+    <label class="validation-message">Prénom requis.</label>
+  </div>
+  <input type="text" #email="ngModel" [(ngModel)]="userService.selectedUser.mail" name="mail" placeholder="Mail"
+  required [pattern]="mailRegex"  [ngClass]="{'invalid-textbox' :inscrForm.submitted && !mail.valid }">
+  <div *ngIf="inscrForm.submitted && mail.errors">
+    <label *ngIf="mail.errors.required" class="validation-message">Mail requis.</label>
+    <label *ngIf="mail.errors.pattern" class="validation-message">Mail invalide.</label>
+  </div>
+  <input type="password" #password="ngModel" [(ngModel)]="userService.selectedUser.password" name="password" placeholder="Mot de passe"
+  minlength="4" required [ngClass]="{'invalid-textbox' :inscrForm.submitted && !password.valid }">
+  <div *ngIf="inscrForm.submitted && password.errors">
+    <label *ngIf="password.errors.required" class="validation-message">Mot de passe requis.</label>
+  </div>
+  <input type="submit" value="Valider">
+</form>
+<!-- Success message -->
+<div class="success" *ngIf="showSucessMessage">
+  Saved successfully
+</div>
+ 
+<!-- Error message -->
+<div class="alert" *ngIf="serverErrorMessages">
+  {{serverErrorMessages}}
+</div>
