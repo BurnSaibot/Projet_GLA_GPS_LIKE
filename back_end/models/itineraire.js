@@ -28,23 +28,4 @@ var itineraireSchema = new Schema({
     
 });
 
-/*itineraireSchema.post('save', function (itineraireSaved){
-    
-    itineraireSchema.find({_id: itineraireSaved.utilisateur}).sort({date: 1})
-    .then(function(search) {
-        if (search.length > 10) {
-            var id_to_remove = search[0]._id;
-            return itineraireSchema.findAndDeleteById({_id: id_to_remove})
-        }
-    })
-    .then(function(dataDeleted){
-        console.log('Supression de ' + dataDeleted);
-    })
-    .catch(function(err) {
-        console.log(err);
-    })
-    //1 -> trié par ordre croissant
-    
-})*/
-
 exports.itineraire = mongoose.model('itineraire', itineraireSchema); 

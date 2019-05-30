@@ -141,9 +141,9 @@ exports.delete = function(req, res) {
         });
 }
 
-exports.calculerItineraireNonTouristique = async function calculerItineraireNonTouristique(req,res) {
+async function calculerItineraireNonTouristique(req,res) {
     console.log("-- Debut du calcul --");
-    
+    console.log(req.params.id);
     var id_i = req.params.id;
     var  itineraire = await
     Itineraire
@@ -187,7 +187,6 @@ exports.calculerItineraireNonTouristique = async function calculerItineraireNonT
 
     
     console.log("-- Find du calcul --");
-    // pour enfin le renvoyer
     _.response.sendObjectData(res,result);
 
 }
@@ -232,7 +231,7 @@ function calcul(depart,fin,options){
 
 var chemins = []; // an array to record all possible paths
 
-exports.getInfoItineraire = function(req, res) {
+function getInfoItineraire(req, res) {
     var idi = req.params.idi;
     if (idi === undefined ) {
         _.response.sendError(res, 'pas de itineraire spécifiée', 500);
@@ -467,17 +466,19 @@ tri_plus_touristique = function(c) {
 }
 
 exports.getItineraire = function getItineraire(req,res) {
-    Itineraire
+    /*Itineraire
     .findById(req.params.id,'optionsAssociees')
     .populate('optionsAssociees')
     .then(function(itineraire){
         if (!itineraire.optionsAssociees.touristique) {
-            calculerItineraireNonTouristique(req,res);
+            
         } else {
             getInfoItineraire(req,res);
         }
     })
     .catch(function(err){
+        console.log("xd")
         _.response.sendError(res,err,500);
-    })
+    })*/
+    calculerItineraireNonTouristique(req,res);
 }
