@@ -6,7 +6,6 @@ var route = require ("./controllers/route.js");
 var troncon = require ("./controllers/troncon.js");
 var vehicule = require ("./controllers/vehicule.js");
 var ville = require ("./controllers/ville.js");
-var suivre = require("./controllers/suivre");
 var _ = require("./controllers/utils");
 
 //
@@ -27,7 +26,7 @@ app
 .delete('/vehicule/:id', authentication.middleware.isLoggedIn, vehicule.supprimerVehicule)
 
 .get('/itineraire', authentication.middleware.isLoggedIn, itineraire.getHistorique)
-.get('/itineraire/:id/calculation/', authentication.middleware.isLoggedIn, itineraire.calculerItineraire)
+.get('/itineraire/:id/calculation/', authentication.middleware.isLoggedIn, itineraire.getItineraire)
 .get('/itineraire/:id', authentication.middleware.isLoggedIn, itineraire.getInfo)
 .post('/itineraire', authentication.middleware.isLoggedIn, itineraire.create)
 
@@ -55,8 +54,6 @@ app
 .get('/troncon/:id', authentication.middleware.isLoggedIn, troncon.infoTroncon)
 .put('/troncon/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.updtTroncon)
 .delete('/troncon/:id', authentication.middleware.isLoggedIn, authentication.middleware.isAdmin, troncon.supprimerTroncon)
-
-.get('/suivre/:idi', authentication.middleware.isLoggedIn, suivre.getInfoItineraire)
 
 //we should add routes when needed, dont forget that we can GET/POST/PUT/DELETE for get/create/updt/delete
 
