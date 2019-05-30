@@ -1,17 +1,22 @@
-  <form #signInForm="ngForm" (ngSubmit)="signInForm.valid && onSubmit(signInForm)">
-    <input type="text" name="email" #email="ngModel" [(ngModel)]="model.email" placeholder="Email" [pattern]="emailRegex" required
-      [ngClass]="{'invalid-textbox' :signInForm.submitted && !email.valid }">
-    <div *ngIf="signInForm.submitted && email.errors?.pattern">
-      <label class="validation-message">Invalid email address.</label>
-    </div>
-    <input type="password" name="password" #password="ngModel" [(ngModel)]="model.password" placeholder="Password" required minlength="4"
-      [ngClass]="{'invalid-textbox' :signInForm.submitted && !password.valid }">
-    <div *ngIf="signInForm.submitted && password.errors?.minlength">
-      <label class="validation-message">Minimum 4 characters.</label>
-    </div>
-    <input type="submit" value="Sign In">
-  </form>
-  <!-- Error message -->
-<div class="alert" *ngIf="serverErrorMessages">
-    {{serverErrorMessages}}
+<form #connForm="ngForm" (ngSubmit)="connForm.valid && onSubmit(connForm)">
+  <input type="text" #email="ngModel" [(ngModel)]="userService.selectedUser.mail" name="mail" placeholder="Mail"
+  required [pattern]="mailRegex"  [ngClass]="{'invalid-textbox' :connForm.submitted && !mail.valid }">
+  <div *ngIf="connForm.submitted && mail.errors">
+    <label *ngIf="mail.errors.required" class="validation-message">Mail requis.</label>
   </div>
+  <input type="password" #password="ngModel" [(ngModel)]="userService.selectedUser.password" name="password" placeholder="Mot de passe"
+  minlength="4" required [ngClass]="{'invalid-textbox' :connForm.submitted && !password.valid }">
+  <div *ngIf="connForm.submitted && password.errors">
+    <label *ngIf="password.errors.required" class="validation-message">Mot de passe requis.</label>
+  </div>
+  <input type="submit" value="Valider">
+</form>
+<!-- Success message -->
+<div class="success" *ngIf="showSucessMessage">
+  Saved successfully
+</div>
+ 
+<!-- Error message -->
+<div class="alert" *ngIf="serverErrorMessages">
+  {{serverErrorMessages}}
+</div>
