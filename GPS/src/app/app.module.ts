@@ -29,7 +29,6 @@ import { ConnexionComponent } from './user/connexion/connexion.component';
 import { OptionsComponent } from './options/options.component';
 import { UserComponent } from './user/user.component';
 import { routerNgProbeToken } from '@angular/router/src/router_module';
-import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -39,8 +38,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     NavigationComponent,
     ConnexionComponent,
     OptionsComponent,
-    UserComponent,
-    UserProfileComponent
+    UserComponent
   ],
   imports: [
     AlertModule.forRoot(),
