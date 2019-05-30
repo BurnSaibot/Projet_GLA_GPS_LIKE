@@ -2,6 +2,7 @@ var _ = require('./Utils.js');
 var Ville = require('../models/ville.js').ville;
 var type = require('../models/ville.js').type;
 var cType = require('../models/ville.js').isCorrectType;
+var createGraph = require('ngraph.graph');
 
 exports.listeVilles = function(req, res) {
         Ville.find(function(error, villes){
@@ -50,6 +51,7 @@ exports.createVille = function(req, res) {
                 return;
             }
             newVille.__v = undefined;
+            global.graph.addNode(ville._id,{nom : ville.nom});
             _.response.sendObjectData(res,ville);
         });
 }
@@ -87,6 +89,10 @@ exports.supprimerVille = function (req, res) {
                 _.response.sendError(res, error, 500);
                 return;
             }
+            global.graph.removeNode(idv);
+            global.graph.forEachLinkedNode(idv, function(linkedNode,link){
+                global.graph.removeLink(link);
+            })
             _.response.sendSuccess(res, 'Ville est supprimée.');
         })
 }

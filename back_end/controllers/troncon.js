@@ -81,6 +81,14 @@ exports.createTroncon = function(req, res) {
             return;
         }
         newTroncon.__v = undefined;
+        global.graph.addLink(troncon.ville2, troncon.ville1,
+            {
+                longueur : troncon.longueur,
+                vitesse: troncon.vitesseMax,
+                id_tr : troncon._id,
+                radar : troncon.radar,
+                peage : troncon.peage
+            })
         _.response.sendObjectData(res,troncon);
     });
 }
@@ -109,11 +117,13 @@ exports.updtTroncon = function (req, res) {
 
 exports.supprimerTroncon = function (req, res) {
     var idt = req.params.id;
-    Troncon.findByIdAndDelete(idt, function (error) {
+    Troncon.findByIdAndDelete(idt, function (error, troncon) {
         if (error) {
             _.response.sendError(res, error, 500);
             return;
         }
+        var link = global.graph.getLink(troncon.ville1,troncon.ville2);
+        global.graph.removeLink(link);
         _.response.sendSuccess(res, 'Troncon supprimé.');
     })
 }
