@@ -24,12 +24,7 @@ exports.getInfoItineraire = function(req, res) {
                     resolve();
                 }, 2000);
             }).then(function () {
-                var chemins_tries = tri_par_option(option, chemins);
-                setTimeout(function(){
-                    resolve();
-                }, 1000);
-            }).then(function () {
-                _.response.sendObjectData(res,chemins_tries);
+                tri_par_option(option, chemins);
             })
         })
         .catch(function (err){
@@ -126,7 +121,8 @@ tri_plus_court = function(c) {
         c[pos+1] = cpt;
     }
     // console.log(c);
-    return c;
+    _.response.sendObjectData(c);
+    // return c;
 } 
 
 // ########## sort by the fastest  ##########
@@ -153,7 +149,8 @@ tri_plus_rapide = function(c) {
         c[pos+1] = cpt;
     }
     // console.log(c);
-    return c;
+    _.response.sendObjectData(c);
+    // return c;
 }
 
 // ########## sort by without radar  ##########
@@ -181,7 +178,8 @@ tri_sans_radars = function(c) {
         }
     });
     // console.log(cheminSr);
-    return cheminSr;
+    _.response.sendObjectData(cheminSr);
+    // return cheminSr;
 }
 
 // ########## sort by without toll  ##########
@@ -209,7 +207,8 @@ tri_sans_peages = function(c) {
         }
     });
     // console.log(cheminSp);
-    return cheminSp;
+    _.response.sendObjectData(cheminSp);
+    // return cheminSp;
 }
 
 // ########## sort by the most touristy  ##########
@@ -237,5 +236,5 @@ tri_plus_touristique = function(c) {
         c[pos+1] = cpt;
     }
     // console.log(c);
-    return c;
+    _.response.sendObjectData(c);
 }
