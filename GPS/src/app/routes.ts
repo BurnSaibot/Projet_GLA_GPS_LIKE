@@ -23,6 +23,6 @@ export const appRoutes: Routes = [
         children: [{ path: '', component: NavigationComponent }]
     },
     {
-        path: '', redirectTo: '/login', pathMatch: 'full'
+        path: '', redirectTo: '/inscription', pathMatch: 'full'
     }
 ];

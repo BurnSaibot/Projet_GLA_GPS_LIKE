@@ -65,7 +65,11 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent, 
+    InscriptionComponent, 
+    UserComponent
+  ]
 })
 export class AppModule 
 {

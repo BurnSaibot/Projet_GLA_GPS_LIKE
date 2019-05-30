@@ -9,7 +9,8 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-connexion',
   templateUrl: './connexion.component.html',
-  styleUrls: ['./connexion.component.css']
+  styleUrls: ['./connexion.component.css'],
+  providers: [UserService]
 })
 export class ConnexionComponent implements OnInit {
  
