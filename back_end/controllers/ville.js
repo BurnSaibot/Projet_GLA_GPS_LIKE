@@ -41,7 +41,9 @@ exports.createVille = function(req, res) {
         var newVille = new Ville({
             nom: req.body.nom,
             taille: req.body.taille,
-            touristique: req.body.touristique
+            touristique: req.body.touristique,
+            longitude: req.body.longitude,
+            latitude: req.body.latitude
         });
 
         // save it
