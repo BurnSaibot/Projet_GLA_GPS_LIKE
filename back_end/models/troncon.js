@@ -34,7 +34,7 @@ var tronconSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'ville'
     }
-})*/; 
+}); 
 
 // var tronconSchema = new Schema({
 //     ville1: {
